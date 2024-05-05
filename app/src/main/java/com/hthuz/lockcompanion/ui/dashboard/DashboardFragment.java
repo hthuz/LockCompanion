@@ -151,17 +151,42 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
-            BluetoothGattService esp32Service = bluetoothService.getGattServiceByUUID(ESP32_USER_SERVICE_UUID);
-            if (esp32Service == null)
+            writeESP32("0");
+        });
+        binding.btnEnroll.setOnClickListener(v -> {
+            if (!connected) {
+                showMsg("Please connect doorlock first");
                 return;
-            BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(ESP32_RX_CHARACTERISTIC_UUID);
-            BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(ESP32_TX_CHARACTERISTIC_UUID);
-            rxCharacteristic.setValue("3");
-            bluetoothService.writeCharacteristic(rxCharacteristic);
-            Log.i(TAG, "rx value: " + new String(rxCharacteristic.getValue()));
+            }
+            writeESP32("1");
+        });
+        binding.btnEmpty.setOnClickListener(v -> {
+            if (!connected) {
+                showMsg("Please connect doorlock first");
+                return;
+            }
+            writeESP32("2");
+        });
+        binding.btnGetnum.setOnClickListener(v -> {
+            if (!connected) {
+                showMsg("Please connect doorlock first");
+                return;
+            }
+            writeESP32("3");
         });
     }
 
+
+    public void writeESP32(String msg) {
+        BluetoothGattService esp32Service = bluetoothService.getGattServiceByUUID(ESP32_USER_SERVICE_UUID);
+        if (esp32Service == null)
+            return;
+        BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(ESP32_RX_CHARACTERISTIC_UUID);
+        BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(ESP32_TX_CHARACTERISTIC_UUID);
+        rxCharacteristic.setValue(msg);
+        bluetoothService.writeCharacteristic(rxCharacteristic);
+        Log.i(TAG, "rx value: " + new String(rxCharacteristic.getValue()));
+    }
 
     public void onPause() {
         super.onPause();
@@ -218,8 +243,7 @@ public class DashboardFragment extends Fragment {
         if (txCharacteristic != null) {
             bluetoothService.setCharacteristicNotification(txCharacteristic, true);
         }
-
-        binding.serviceTextInfo.setText(service_info_msg);
+//        binding.serviceTextInfo.setText(service_info_msg);
 
     }
 

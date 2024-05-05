@@ -26,7 +26,7 @@
     <TextView
         android:id="@+id/connect_state"
         android:layout_width="329dp"
-        android:layout_height="41dp"
+        android:layout_height="30dp"
         android:textAlignment="center"
         android:text="state"
         app:layout_constraintBottom_toTopOf="@+id/btn_connect"
@@ -36,76 +36,77 @@
 
     <Button
         android:id="@+id/btn_connect"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="124dp"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="Connect DoorLock"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/connect_state" />
 
     <Button
         android:id="@+id/btn_unlock"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="Unlock"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_connect" />
 
     <Button
         android:id="@+id/btn_enroll"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="Enroll Fingerprint"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_unlock" />
 
     <Button
         android:id="@+id/btn_empty"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="Empty Fingerprint"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_enroll" />
 
     <Button
         android:id="@+id/btn_getnum"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="Get Fingerprint Number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_empty" />
 
@@ -113,20 +114,20 @@
         android:id="@+id/test_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="10dp"
         android:text="Test message"
         app:layout_constraintTop_toBottomOf="@+id/btn_getnum"
         tools:layout_editor_absoluteX="142dp" />
 
-    <TextView
-        android:id="@+id/service_text_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This will show service info"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_msg"
-        app:layout_constraintVertical_bias="0.175"
-        tools:layout_editor_absoluteX="27dp" />
+<!--    <TextView-->
+<!--        android:id="@+id/service_text_info"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="This will show service info"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/test_msg"-->
+<!--        app:layout_constraintVertical_bias="0.175"-->
+<!--        tools:layout_editor_absoluteX="27dp" />-->
 
     <TextView
         android:id="@+id/read_console"
@@ -137,7 +138,7 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/service_text_info"
+        app:layout_constraintTop_toBottomOf="@+id/test_msg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

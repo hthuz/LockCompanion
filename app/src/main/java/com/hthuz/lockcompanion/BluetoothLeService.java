@@ -45,13 +45,13 @@ public class BluetoothLeService extends Service {
             Log.i(TAG,"onConnectionStateChange");
             //successfully connected to gatt server
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.e(TAG, "New state is connected");
+                Log.i(TAG, "New state is connected");
                 connectState = STATE_CONNECTED;
                 broadcastUpdate(ACTION_GATT_CONNECTED);
                 // Discover services after connection
                 bluetoothGatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.e(TAG, "New state is disconnected");
+                Log.i(TAG, "New state is disconnected");
                 connectState = STATE_DISCONNECTED;
                 broadcastUpdate(ACTION_GATT_DISCONNECTED);
             }
@@ -61,7 +61,7 @@ public class BluetoothLeService extends Service {
 //            super.onServicesDiscovered(gatt, status);
             Log.i(TAG, "onServiceDiscovered");
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.e(TAG, "broadcast service discovered");
+                Log.i(TAG, "broadcast service discovered");
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             } else {
                 Log.w(TAG, "onServiceDiscovered received: " + status);
@@ -149,6 +149,7 @@ public class BluetoothLeService extends Service {
 
     public List<BluetoothGattService> getSupportedGattServices() {
         if (bluetoothGatt == null) return null;
+        Log.i(TAG, "number of services: " + bluetoothGatt.getServices().size());
         return bluetoothGatt.getServices();
     }
     public BluetoothGattService getGattServiceByUUID(UUID uuid) {
