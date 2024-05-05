@@ -177,7 +177,22 @@ public class DashboardFragment extends Fragment {
                 return;
             }
             writeESP32("3");
+
+
         });
+        binding.btnReadvalue.setOnClickListener((v -> {
+            if (!connected) {
+                showMsg("Please connect doorlock first");
+                return;
+            }
+
+            BluetoothGattService esp32Service = bluetoothService.getGattServiceByUUID(ESP32_USER_SERVICE_UUID);
+            if (esp32Service == null)
+                return;
+            BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(ESP32_RX_CHARACTERISTIC_UUID);
+            BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(ESP32_TX_CHARACTERISTIC_UUID);
+            bluetoothService.readCharacteristic(txCharacteristic);
+        }));
     }
 
 
@@ -213,8 +228,8 @@ public class DashboardFragment extends Fragment {
 
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if(gattServices == null) return;
-        String msg = "Service number: " + gattServices.size();
-        binding.testMsg.setText(msg);
+//        String msg = "Service number: " + gattServices.size();
+//        binding.testMsg.setText(msg);
         String service_info_msg = "";
 
         BluetoothGattCharacteristic txCharacteristic = null;

@@ -170,7 +170,7 @@ public class BluetoothLeService extends Service {
         return bluetoothGatt.getService(uuid);
     }
     public void readCharacteristic(BluetoothGattCharacteristic characteristic) {
-        if (bluetoothGatt ==null) {
+        if (bluetoothGatt == null) {
             Log.e(TAG, "BluetoothGatt not initialized");
             return;
         }
