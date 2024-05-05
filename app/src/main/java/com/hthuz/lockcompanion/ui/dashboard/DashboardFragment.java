@@ -113,11 +113,11 @@ public class DashboardFragment extends Fragment {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 connected = true;
                 // show connected message
-                binding.connectState.setText("CONNECTED!");
+                binding.connectState.setText("CONNECTED");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 connected = false;
                 // show disconnected message
-                binding.connectState.setText("DISCONNECTED!");
+                binding.connectState.setText("DISCONNECTED");
 
                 try {
                     Thread.sleep(2000);
@@ -129,6 +129,10 @@ public class DashboardFragment extends Fragment {
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // display supported services
                 displayGattServices(bluetoothService.getSupportedGattServices());
+            } else if (BluetoothLeService.ACTION_CHARACTERISTIC_READ.equals(action)
+                    || BluetoothLeService.ACTION_CHARACTERISTIC_CHANGED.equals(action)) {
+                String readValue = intent.getStringExtra("readValue");
+                binding.readConsole.setText("Read Data:" + readValue);
             }
         }
     };
@@ -199,7 +203,9 @@ public class DashboardFragment extends Fragment {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE_CHARACTERISTC);
+        intentFilter.addAction(BluetoothLeService.ACTION_CHARACTERISTIC_WRITE);
+        intentFilter.addAction(BluetoothLeService.ACTION_CHARACTERISTIC_READ);
+        intentFilter.addAction(BluetoothLeService.ACTION_CHARACTERISTIC_CHANGED);
         return intentFilter;
     }
 

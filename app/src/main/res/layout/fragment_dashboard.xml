@@ -26,9 +26,10 @@
     <TextView
         android:id="@+id/connect_state"
         android:layout_width="329dp"
-        android:layout_height="30dp"
+        android:layout_height="34dp"
         android:textAlignment="center"
         android:text="state"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_connect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -30,10 +30,12 @@ public class BluetoothLeService extends Service {
     public static final String TAG = "GATT_DEBUG";
     private BluetoothAdapter adapter;
     private BluetoothGatt bluetoothGatt; // used to close connection when service no longer needed
-    public final static String ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
-    public final static String ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
-    public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
-    public final static String ACTION_DATA_AVAILABLE_CHARACTERISTC = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE_CHARACTERISTIC";
+    public final static String ACTION_GATT_CONNECTED = "com.hthuz.lockcompanion.ACTION_GATT_CONNECTED";
+    public final static String ACTION_GATT_DISCONNECTED = "com.hthuz.lockcompanion.ACTION_GATT_DISCONNECTED";
+    public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.hthuz.lockcompanion.ACTION_GATT_SERVICES_DISCOVERED";
+    public final static String ACTION_CHARACTERISTIC_READ = "com.hthuz.lockcompanion.ACTION_DATA_AVAILABLE_CHARACTERISTIC";
+    public final static String ACTION_CHARACTERISTIC_WRITE = "com.hthuz.lockcompanion.ACTION_CHARACTERISTIC_WRITE";
+    public final static String ACTION_CHARACTERISTIC_CHANGED = "com.hthuz.lockcompanion.ACTION_CHARACTERISTIC_CHANGED";
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTED = 2;
     private int connectState;
@@ -72,10 +74,14 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.i(TAG, "onCharacteristicRead");
             if (status == BluetoothGatt.GATT_SUCCESS){
-                broadcastUpdate(ACTION_DATA_AVAILABLE_CHARACTERISTC);
                 final byte[] data = characteristic.getValue();
                 if (data != null && data.length > 0) {
-                    Log.e(TAG, new String(data));
+                    String rdata = new String(data);
+                    Log.e(TAG, rdata);
+                    // broadcast data
+                    Intent intent = new Intent(ACTION_CHARACTERISTIC_READ);
+                    intent.putExtra("readValue", rdata);
+                    sendBroadcast(intent);
                 }
             }
         }
@@ -83,18 +89,25 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.i(TAG, "onCharacteristicWrite");
             if (status == BluetoothGatt.GATT_SUCCESS) {
-
+                broadcastUpdate(ACTION_CHARACTERISTIC_WRITE);
             }
         }
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
             Log.i(TAG, "onCharacteristicChanged");
+
             byte[] data = characteristic.getValue();
             if (data != null & data.length > 0) {
                 String rdata = new String(data);
                 Log.i(TAG, "tx value:" + rdata);
+
+                // broadcast data
+                Intent intent = new Intent(ACTION_CHARACTERISTIC_CHANGED);
+                intent.putExtra("readValue", rdata);
+                sendBroadcast(intent);
             }
+
         }
     };
 
@@ -171,6 +184,7 @@ public class BluetoothLeService extends Service {
         Log.i(TAG,"call writeCharacteristic");
         bluetoothGatt.writeCharacteristic(characteristic);
     }
+
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
         Log.i(TAG, "call setCharacteristicNotification");
         if (bluetoothGatt == null) {
