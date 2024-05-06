@@ -63,6 +63,7 @@ public class DashboardFragment extends Fragment {
             getActivity().bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         });
 
+        getActivity().registerReceiver(gattUpdateReceiver,makeGattUpdateIntentFilter());
         // bluetooth related
         initView();
         return root;
@@ -94,7 +95,6 @@ public class DashboardFragment extends Fragment {
                     getActivity().finish();
                 }
                 // perform connection
-                getActivity().registerReceiver(gattUpdateReceiver,makeGattUpdateIntentFilter());
                 final boolean result = bluetoothService.connect(testMAC);
                 Log.d(TAG, "Connect request result=" + result);
             }
@@ -138,6 +138,7 @@ public class DashboardFragment extends Fragment {
     };
 
     private void initView() {
+
 
         binding.btnConnect.setOnClickListener(v -> {
             if (connected) {
