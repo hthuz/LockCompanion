@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -68,17 +69,32 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void initView() {
-        binding.btnRequest.setOnClickListener(v -> {
+
+        binding.loginButton.setOnClickListener(v -> {
             Response response = null;
+            String username = binding.username.getText().toString();
+            if (username.isEmpty()) {
+                showMsg("Please enter username");
+                return;
+            }
+            String password = binding.password.getText().toString();
+            if (password.isEmpty()) {
+                showMsg("Please enter password");
+                return;
+            }
+            String lockid = binding.lockid.getText().toString();
+            if (lockid.isEmpty()) {
+                showMsg("Please enter lock id");
+                return;
+            }
+            String url = String.format("http://82.157.179.228:8080/user?name=%s&ID=%s&password=%s", username, lockid, password);
             try {
-                run("http://82.157.179.228:8080/user?name=Bob&ID=1&password=123456");
+                run(url);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         });
-
-
 
     }
 
@@ -86,5 +102,8 @@ public class NotificationsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    public void showMsg(CharSequence msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }
 }

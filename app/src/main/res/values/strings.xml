@@ -2,5 +2,5 @@
     <string name="app_name">LockCompanion</string>
     <string name="title_home">Scan</string>
     <string name="title_dashboard">Unlock</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_notifications">Login</string>
 </resources>
