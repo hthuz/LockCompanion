@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hthuz.lockcompanion.databinding.ItemDeviceBinding;
+import com.hthuz.lockcompanion.ui.dashboard.DashboardFragment;
 import com.hthuz.lockcompanion.ui.home.HomeFragment;
 
 import java.util.List;
@@ -59,9 +60,12 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
                 String address = device.getDevice().getAddress().toString();
                 if (!name.contains("ESP32")) {
                     showMsg("Only door lock can be connected");
+                    return;
                 }
                 Log.i(TAG, name);
                 Log.i(TAG, device.getDevice().getAddress());
+                Values.macAddress = address;
+                showMsg(name + " selected");
             });
         }
 

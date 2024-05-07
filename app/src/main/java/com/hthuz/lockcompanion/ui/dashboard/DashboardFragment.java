@@ -1,5 +1,6 @@
 package com.hthuz.lockcompanion.ui.dashboard;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -28,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.hthuz.lockcompanion.Values;
 import com.hthuz.lockcompanion.databinding.FragmentDashboardBinding;
 import com.hthuz.lockcompanion.BluetoothLeService;
 
@@ -39,6 +41,7 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding binding;
 
     private ActivityResultLauncher<String> requestBluetoothConnect;
+    private static final String TAG = "MY_DEBUG";
 
 //    public void OnCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -47,11 +50,22 @@ public class DashboardFragment extends Fragment {
 //        Log.e(TAG, "Before start service");
 //        Log.e(TAG, "After start service");
 //    }
+
+    public void OnCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "Dashboard fragment onCreate");
+    }
+
+
+    private int test_num;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         DashboardViewModel dashboardViewModel =
                 new ViewModelProvider(this).get(DashboardViewModel.class);
 
+        Log.i(TAG, "Dashboard fragment onCreateView " + test_num);
+        test_num++;
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -73,20 +87,31 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        Log.i(TAG, "Dashboard fragment onDestroyView");
         super.onDestroyView();
         readRssiThread = null;
         binding = null;
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Dashboard fragment onDestroy");
+    }
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Dashboard fragment onResume");
+    }
 
 
 
-    public String testMAC = "E8:6B:EA:D4:FC:D6"; // another ESP32
-    //        public String testMAC = "14:94:6C:C0:53:83"; // My iPhone
+//    public String testMAC = "E8:6B:EA:D4:FC:D6"; // another ESP32
+    //        public String testMAC = "14:94:6C:C0:53:83"; // My iP
+//
+//    public String testMac = Values.macAddress;
     public UUID ESP32_USER_SERVICE_UUID = UUID.fromString("12a59900-17cc-11ec-9621-0242ac130002");
     public UUID ESP32_RX_CHARACTERISTIC_UUID = UUID.fromString("12a59e0a-17cc-11ec-9621-0242ac130002");
     public UUID ESP32_TX_CHARACTERISTIC_UUID = UUID.fromString("12a5a148-17cc-11ec-9621-0242ac130002");
 
-    public static final String TAG = "GATT_DEBUG";
     private BluetoothLeService bluetoothService;
     private boolean connected;
     private Thread readRssiThread = new Thread() {
@@ -116,7 +141,7 @@ public class DashboardFragment extends Fragment {
                     getActivity().finish();
                 }
                 // perform connection
-                final boolean result = bluetoothService.connect(testMAC);
+                final boolean result = bluetoothService.connect(Values.macAddress);
                 Log.d(TAG, "Connect request result=" + result);
             }
 
@@ -145,7 +170,7 @@ public class DashboardFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e(TAG, "Error");
                 }
-                final boolean result = bluetoothService.connect(testMAC);
+                final boolean result = bluetoothService.connect(Values.macAddress);
                 Log.d(TAG, "Connect request result=" + result);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // display supported services
@@ -164,6 +189,10 @@ public class DashboardFragment extends Fragment {
         }
     };
 
+    public void startConnect() {
+        requestBluetoothConnect.launch(android.Manifest.permission.BLUETOOTH_CONNECT);
+    }
+
     private void initView() {
 
 
@@ -174,8 +203,10 @@ public class DashboardFragment extends Fragment {
             }
             if (requestBluetoothConnect == null) {
                 showMsg("request is null");
+                return;
             }
-            requestBluetoothConnect.launch(android.Manifest.permission.BLUETOOTH_CONNECT);
+            Log.i(TAG, "MAC is " + Values.macAddress);
+            startConnect();
 
         });
         binding.btnUnlock.setOnClickListener(v -> {

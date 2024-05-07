@@ -28,7 +28,7 @@ public class NotificationsFragment extends Fragment {
 
     private FragmentNotificationsBinding binding;
     private OkHttpClient client = new OkHttpClient();
-    final static String TAG = "HTTP_DEBUG";
+    final static String TAG = "MY_DEBUG";
 
     public void run(String url) throws IOException {
 
@@ -57,6 +57,7 @@ public class NotificationsFragment extends Fragment {
         NotificationsViewModel notificationsViewModel =
                 new ViewModelProvider(this).get(NotificationsViewModel.class);
 
+        Log.i(TAG, "Notification fragment onCreateView");
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -102,7 +103,17 @@ public class NotificationsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        Log.i(TAG, "Notification fragment onDestroyView");
     }
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Notification fragment onDestroy");
+    }
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Notification fragment onResume");
+    }
+
     public void showMsg(CharSequence msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     }

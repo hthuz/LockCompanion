@@ -51,6 +51,7 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
+        Log.i(TAG, "Home fragment onCreateView");
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -65,10 +66,18 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.i(TAG, "Home fragment onDestroyView");
         binding = null;
     }
 
-
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Home fragment onDestroy");
+    }
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Home fragment onResume");
+    }
 
     private ActivityResultLauncher<Intent> enableBluetooth;         // open bluetooth intent
     private ActivityResultLauncher<String> requestBluetoothConnect;
@@ -76,8 +85,8 @@ public class HomeFragment extends Fragment {
     private ActivityResultLauncher<String> requestLocation;
     private ActivityResultLauncher<Intent> connectBluetooth;
 
-    private final String TAG = MainActivity.class.getSimpleName();
-
+//    private final String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = "MY_DEBUG";
     private BluetoothAdapter mBluetoothAdapter;
 
     private BluetoothLeScanner scanner;
