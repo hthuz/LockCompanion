@@ -30,10 +30,22 @@
         android:textAlignment="center"
         android:text="state"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_connect"
+        app:layout_constraintBottom_toTopOf="@+id/rssi_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_dashboard" />
+
+    <TextView
+        android:id="@+id/rssi_value"
+        android:layout_width="329dp"
+        android:layout_height="28dp"
+        android:textAlignment="center"
+        android:text="rssi: "
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_connect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connect_state" />
 
     <Button
         android:id="@+id/btn_connect"
@@ -49,7 +61,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connect_state" />
+        app:layout_constraintTop_toBottomOf="@+id/rssi_value" />
 
     <Button
         android:id="@+id/btn_unlock"

@@ -64,6 +64,8 @@ public class DashboardFragment extends Fragment {
         });
 
         getActivity().registerReceiver(gattUpdateReceiver,makeGattUpdateIntentFilter());
+
+        readRssiThread.start();
         // bluetooth related
         initView();
         return root;
@@ -72,8 +74,11 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        readRssiThread = null;
         binding = null;
     }
+
+
 
     public String testMAC = "E8:6B:EA:D4:FC:D6"; // another ESP32
     //        public String testMAC = "14:94:6C:C0:53:83"; // My iPhone
@@ -84,6 +89,22 @@ public class DashboardFragment extends Fragment {
     public static final String TAG = "GATT_DEBUG";
     private BluetoothLeService bluetoothService;
     private boolean connected;
+    private Thread readRssiThread = new Thread() {
+        @Override
+        public void run() {
+            while(true) {
+                if (connected) {
+                    try {
+                        sleep(500);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    bluetoothService.readRemoteRssi();
+                }
+            }
+        }
+    };
+
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -133,6 +154,12 @@ public class DashboardFragment extends Fragment {
                     || BluetoothLeService.ACTION_CHARACTERISTIC_CHANGED.equals(action)) {
                 String readValue = intent.getStringExtra("readValue");
                 binding.readConsole.setText("Read Data:" + readValue);
+            } else if (BluetoothLeService.ACTION_READ_REMOTE_RSSI.equals(action)) {
+                int rssi = intent.getIntExtra("rssi", 0);
+                binding.rssiValue.setText("rssi: " + rssi);
+                if (connected && rssi < 0 && rssi > -50) {
+                    writeESP32("5");
+                }
             }
         }
     };
@@ -156,7 +183,7 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
-            writeESP32("0");
+            writeESP32("5");
         });
         binding.btnEnroll.setOnClickListener(v -> {
             if (!connected) {
@@ -222,6 +249,7 @@ public class DashboardFragment extends Fragment {
         intentFilter.addAction(BluetoothLeService.ACTION_CHARACTERISTIC_WRITE);
         intentFilter.addAction(BluetoothLeService.ACTION_CHARACTERISTIC_READ);
         intentFilter.addAction(BluetoothLeService.ACTION_CHARACTERISTIC_CHANGED);
+        intentFilter.addAction(BluetoothLeService.ACTION_READ_REMOTE_RSSI);
         return intentFilter;
     }
 

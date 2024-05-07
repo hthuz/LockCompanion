@@ -36,6 +36,7 @@ public class BluetoothLeService extends Service {
     public final static String ACTION_CHARACTERISTIC_READ = "com.hthuz.lockcompanion.ACTION_DATA_AVAILABLE_CHARACTERISTIC";
     public final static String ACTION_CHARACTERISTIC_WRITE = "com.hthuz.lockcompanion.ACTION_CHARACTERISTIC_WRITE";
     public final static String ACTION_CHARACTERISTIC_CHANGED = "com.hthuz.lockcompanion.ACTION_CHARACTERISTIC_CHANGED";
+    public final static String ACTION_READ_REMOTE_RSSI = "com.hthuz.lockcompanion.ACTION_READ_REMOTE_RSSI";
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTED = 2;
     private int connectState;
@@ -107,7 +108,15 @@ public class BluetoothLeService extends Service {
                 intent.putExtra("readValue", rdata);
                 sendBroadcast(intent);
             }
-
+        }
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            super.onReadRemoteRssi(gatt, rssi, status);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Intent intent = new Intent(ACTION_READ_REMOTE_RSSI);
+                intent.putExtra("rssi", rssi);
+                sendBroadcast(intent);
+            }
         }
     };
 
@@ -185,6 +194,9 @@ public class BluetoothLeService extends Service {
         bluetoothGatt.writeCharacteristic(characteristic);
     }
 
+    public boolean readRemoteRssi() {
+        return bluetoothGatt.readRemoteRssi();
+    }
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
         Log.i(TAG, "call setCharacteristicNotification");
         if (bluetoothGatt == null) {
