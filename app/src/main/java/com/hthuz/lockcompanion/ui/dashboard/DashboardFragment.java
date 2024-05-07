@@ -57,13 +57,15 @@ public class DashboardFragment extends Fragment {
     }
 
 
+    private DashboardViewModel getViewModel() {
+        return new ViewModelProvider(this).get(DashboardViewModel.class);
+    }
     private int test_num;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
 
+        DashboardViewModel dashboardViewModel = getViewModel();
         Log.i(TAG, "Dashboard fragment onCreateView " + test_num);
         test_num++;
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
@@ -81,6 +83,7 @@ public class DashboardFragment extends Fragment {
 
         readRssiThread.start();
         // bluetooth related
+
         initView();
         return root;
     }
@@ -159,11 +162,13 @@ public class DashboardFragment extends Fragment {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 connected = true;
                 // show connected message
-                binding.connectState.setText("CONNECTED");
+                getViewModel().setState("CONNECTED");
+                binding.connectState.setText(getViewModel().getState());
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 connected = false;
                 // show disconnected message
-                binding.connectState.setText("DISCONNECTED");
+                getViewModel().setState("DISCONNECTED");
+                binding.connectState.setText(getViewModel().getState());
 
                 try {
                     Thread.sleep(2000);
@@ -195,7 +200,7 @@ public class DashboardFragment extends Fragment {
 
     private void initView() {
 
-
+        binding.connectState.setText(getViewModel().getState());
         binding.btnConnect.setOnClickListener(v -> {
             if (connected) {
                 showMsg("DoorLock is Already Connected");
