@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,7 +93,7 @@ public class DashboardFragment extends Fragment {
     public void onDestroyView() {
         Log.i(TAG, "Dashboard fragment onDestroyView");
         super.onDestroyView();
-        readRssiThread = null;
+        readRssiThread.stopThread();
         binding = null;
     }
     @Override
@@ -127,6 +128,7 @@ public class DashboardFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    Log.i(TAG, "LOOP");
                     bluetoothService.readRemoteRssi();
                 }
             }
@@ -158,7 +160,7 @@ public class DashboardFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            Log.e(TAG, "Recevie broadcasted action: " + action);
+//            Log.e(TAG, "Recevie broadcasted action: " + action);
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 connected = true;
                 // show connected message
@@ -184,10 +186,11 @@ public class DashboardFragment extends Fragment {
                     || BluetoothLeService.ACTION_CHARACTERISTIC_CHANGED.equals(action)) {
                 String readValue = intent.getStringExtra("readValue");
                 binding.readConsole.setText("Read Data:" + readValue);
+                Log.e(TAG, "fragment read: " + readValue);
             } else if (BluetoothLeService.ACTION_READ_REMOTE_RSSI.equals(action)) {
                 int rssi = intent.getIntExtra("rssi", 0);
                 binding.rssiValue.setText("rssi: " + rssi);
-                if (connected && rssi < 0 && rssi > -50) {
+                if (connected && rssi < 0 && rssi > -45) {
                     writeESP32("5");
                 }
             }
@@ -334,6 +337,14 @@ public class DashboardFragment extends Fragment {
     }
 
     public void showMsg(CharSequence msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT);
+        toast.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, 500);
     }
 }
