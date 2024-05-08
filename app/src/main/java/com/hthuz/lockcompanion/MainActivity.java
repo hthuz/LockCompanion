@@ -7,7 +7,9 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+        String macAddress = sharedPreferences.getString("macAddress", "E8:6B:EA:D4:FC:D6");
+        String deviceName = sharedPreferences.getString("deviceName", "ESP32_doorlock");
+        binding.curDevice.setText(deviceName + " " + macAddress);
     }
 
 

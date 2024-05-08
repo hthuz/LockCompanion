@@ -1,11 +1,13 @@
 package com.hthuz.lockcompanion;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,8 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
 
     private final List<MyDevice> lists;
     private final Context context;
+
+    public static final String ACTION_DEVICE_SELECTED = "com.hthuz.lockcompanion.ACTION_DEVICE_SELECTED";
     private final static String TAG = "DEBUG";
 
     public MyDeviceAdapter(List<MyDevice> lists, Context context) {
@@ -62,6 +66,7 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
         public ViewHolder(@NonNull ItemDeviceBinding itemTextDataRvBinding) {
             super(itemTextDataRvBinding.getRoot());
             binding = itemTextDataRvBinding;
+
             binding.deviceItem.setOnClickListener(v -> {
                 MyDevice device = binding.getDevice();
                 String name = device.getDevice().getName() != null ? device.getDevice().getName().toString() : "Unknown";
@@ -83,9 +88,11 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
                 SharedPreferences sharedPreferences = this.itemView.getContext().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("macAddress", address);
+                editor.putString("deviceName", name);
                 editor.commit();
 
-
+                Intent intent = new Intent(MyDeviceAdapter.ACTION_DEVICE_SELECTED);
+                this.itemView.getContext().sendBroadcast(intent);
 
             });
         }

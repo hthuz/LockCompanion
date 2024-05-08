@@ -103,13 +103,16 @@
 
     <TextView
         android:id="@+id/server_resp"
-        android:layout_width="59dp"
-        android:layout_height="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text=""
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginCard"
-        app:layout_constraintVertical_bias="0.505"
-        tools:layout_editor_absoluteX="176dp" />
+        app:layout_constraintVertical_bias="0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

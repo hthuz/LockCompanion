@@ -7,7 +7,11 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +62,8 @@ public class HomeFragment extends Fragment {
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        getActivity().registerReceiver(selectDeviceReceiver, makeIntentFilter());
         // Init bluetooth related button
         initView();
         return root;
@@ -68,6 +74,7 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.i(TAG, "Home fragment onDestroyView");
+        getActivity().unregisterReceiver(selectDeviceReceiver);
         binding = null;
     }
 
@@ -269,5 +276,25 @@ public class HomeFragment extends Fragment {
                 toast.cancel();
             }
         }, 500);
+    }
+
+    private BroadcastReceiver selectDeviceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (MyDeviceAdapter.ACTION_DEVICE_SELECTED.equals(action)) {
+                TextView curDevice = (TextView) getActivity().findViewById(R.id.cur_device);
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+                String macAddress = sharedPreferences.getString("macAddress", "E8:6B:EA:D4:FC:D6");
+                String deviceName = sharedPreferences.getString("deviceName", "ESP32_doorlock");
+                curDevice.setText(deviceName + " " + macAddress);
+            }
+        }
+    };
+
+    private static IntentFilter makeIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyDeviceAdapter.ACTION_DEVICE_SELECTED);
+        return intentFilter;
     }
 }

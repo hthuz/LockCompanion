@@ -10,7 +10,7 @@ public class NotificationsViewModel extends ViewModel {
 
     public NotificationsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Request");
+        mText.setValue("Lock Companion Remote Request");
     }
 
     public LiveData<String> getText() {
