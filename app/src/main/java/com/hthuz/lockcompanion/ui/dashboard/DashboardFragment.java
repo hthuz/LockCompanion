@@ -179,8 +179,10 @@ public class DashboardFragment extends Fragment {
                 showMsg("request is null");
                 return;
             }
+
             Log.i(TAG, "MAC is " + Values.macAddress);
             startConnect();
+            showMsg("Connecting...");
 
         });
         binding.btnUnlock.setOnClickListener(v -> {
@@ -189,6 +191,7 @@ public class DashboardFragment extends Fragment {
                 return;
             }
             writeESP32("5");
+            showMsg("Unlocking...");
         });
         binding.btnEnroll.setOnClickListener(v -> {
             if (!getViewModel().isConnected()) {
@@ -196,6 +199,7 @@ public class DashboardFragment extends Fragment {
                 return;
             }
             writeESP32("1");
+            showMsg("Enrolling...");
         });
         binding.btnEmpty.setOnClickListener(v -> {
             if (!getViewModel().isConnected()) {
@@ -203,6 +207,7 @@ public class DashboardFragment extends Fragment {
                 return;
             }
             writeESP32("2");
+            showMsg("Emptying...");
         });
         binding.btnGetnum.setOnClickListener(v -> {
             if (!getViewModel().isConnected()) {
@@ -210,6 +215,7 @@ public class DashboardFragment extends Fragment {
                 return;
             }
             writeESP32("3");
+            showMsg("Getting...");
 
 
         });
@@ -225,6 +231,21 @@ public class DashboardFragment extends Fragment {
             BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(ESP32_RX_CHARACTERISTIC_UUID);
             BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(ESP32_TX_CHARACTERISTIC_UUID);
             getViewModel().getBluetoothService().readCharacteristic(txCharacteristic);
+        }));
+        binding.btnDisconnect.setOnClickListener((v -> {
+            if (!getViewModel().isConnected()) {
+                showMsg("Device is already disconnected");
+                return;
+            }
+            getViewModel().setConnected(false);
+            getViewModel().setState("DISCONNECTED");
+            binding.connectState.setText(getViewModel().getState());
+            binding.rssiValue.setText("rssi: none");
+            binding.readConsole.setText("");
+            showMsg("diconnecting...");
+            getActivity().unbindService(getViewModel().getServiceConnection());
+//            getViewModel().getBluetoothService().onUnbind();
+
         }));
     }
 

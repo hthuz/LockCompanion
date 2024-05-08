@@ -43,8 +43,10 @@ public class DashboardViewModel extends ViewModel {
                         e.printStackTrace();
                         // Handle interruption
                     }
-                    Log.i(TAG, "LOOP");
-                    bluetoothService.readRemoteRssi();
+                    if (isConnected()) {
+                        Log.i(TAG, "LOOP");
+                        bluetoothService.readRemoteRssi();
+                    }
                 }
             }
         }
@@ -126,7 +128,7 @@ public class DashboardViewModel extends ViewModel {
         mState = new MutableLiveData<>();
         mConnected = new MutableLiveData<>();
         mText.setValue("Lock Companion Unlock");
-        mState.setValue("state");
+        mState.setValue("DISCONNECTED");
         mConnected.setValue(false);
         readRssiThread = new ReadRssiThread();
     }

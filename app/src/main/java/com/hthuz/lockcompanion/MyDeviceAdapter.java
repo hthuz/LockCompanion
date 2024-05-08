@@ -1,6 +1,7 @@
 package com.hthuz.lockcompanion;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -70,7 +71,15 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
         }
 
         public void showMsg(CharSequence msg) {
-            Toast.makeText(this.itemView.getContext(), msg, Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this.itemView.getContext(), msg, Toast.LENGTH_SHORT);
+            toast.show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toast.cancel();
+                }
+            }, 500);
         }
 
     }
