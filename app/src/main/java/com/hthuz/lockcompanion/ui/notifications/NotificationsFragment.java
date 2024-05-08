@@ -3,6 +3,7 @@ package com.hthuz.lockcompanion.ui.notifications;
 import android.app.DownloadManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.hthuz.lockcompanion.databinding.FragmentNotificationsBinding;
 
 import org.json.JSONObject;
@@ -41,11 +44,15 @@ public class NotificationsFragment extends Fragment {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+//                Looper.prepare();
+//                showMsg("Connect failed");
+//                Looper.loop();
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                Log.i(TAG, "RESP");
                 try (ResponseBody responseBody = response.body()) {
                     String msg = responseBody.string();
                     Log.i(TAG, msg);
@@ -57,7 +64,8 @@ public class NotificationsFragment extends Fragment {
                         if (!jsonObject.has("content"))
                             return;
                         Log.i(TAG, jsonObject.getString("content"));
-                        binding.serverResp.setText(jsonObject.getString("content"));
+//                        binding.serverResp.setText(jsonObject.getString("content"));
+                        showMsg(jsonObject.getString("content"));
                     } catch (Exception e) {e.printStackTrace();}
 
                 }
@@ -94,30 +102,83 @@ public class NotificationsFragment extends Fragment {
                 e.printStackTrace();
             }
         });
-        binding.loginButton.setOnClickListener(v -> {
+
+        binding.registerButton.setOnClickListener(v -> {
             Response response = null;
-            String username = binding.username.getText().toString();
+            String username = binding.regUsername.getText().toString();
             if (username.isEmpty()) {
                 showMsg("Please enter username");
                 return;
             }
-            String password = binding.password.getText().toString();
-            if (password.isEmpty()) {
+            String token = binding.regToken.getText().toString();
+            if (token.isEmpty()) {
                 showMsg("Please enter password");
                 return;
             }
-            String lockid = binding.lockid.getText().toString();
+            String lockid = binding.regLockid.getText().toString();
             if (lockid.isEmpty()) {
                 showMsg("Please enter lock id");
                 return;
             }
+            Log.i(TAG, "register");
+            String url = String.format("http://82.157.179.228:8080/register?token=%s&name=%s&ID=%s", token, username, lockid);
+            try {
+                run(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        binding.settingButton.setOnClickListener(v -> {
+            Response response = null;
+            String username = binding.setUsername.getText().toString();
+            if (username.isEmpty()) {
+                showMsg("Please enter username");
+                return;
+            }
+            String token = binding.setToken.getText().toString();
+            if (token.isEmpty()) {
+                showMsg("Please enter password");
+                return;
+            }
+            String password = binding.setPassword.getText().toString();
+            if (password.isEmpty()) {
+                showMsg("Please enter lock id");
+                return;
+            }
+            Log.i(TAG, "setting password");
+            String url = String.format("http://82.157.179.228:8080/setting_password?token=%s&name=%s&password=%s", token, username, password);
+            try {
+                run(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        binding.requestButton.setOnClickListener(v -> {
+            Response response = null;
+            String username = binding.reqUsername.getText().toString();
+            if (username.isEmpty()) {
+                showMsg("Please enter username");
+                return;
+            }
+            String password = binding.reqPassword.getText().toString();
+            if (password.isEmpty()) {
+                showMsg("Please enter password");
+                return;
+            }
+            String lockid = binding.reqLockid.getText().toString();
+            if (lockid.isEmpty()) {
+                showMsg("Please enter lock id");
+                return;
+            }
+            Log.i(TAG, "request");
             String url = String.format("http://82.157.179.228:8080/user?name=%s&ID=%s&password=%s", username, lockid, password);
             try {
                 run(url);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         });
 
     }
@@ -136,16 +197,21 @@ public class NotificationsFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "Notification fragment onResume");
     }
-
     public void showMsg(CharSequence msg) {
-        Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT);
-        toast.show();
 
-        new Handler().postDelayed(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                toast.cancel();
+                Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT);
+                toast.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 500);
             }
-        }, 500);
+        });
+
     }
 }

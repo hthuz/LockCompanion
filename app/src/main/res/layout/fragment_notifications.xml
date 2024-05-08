@@ -6,100 +6,259 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
 
-    <TextView
-        android:id="@+id/text_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/loginCard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
 
-    <Button
-        android:id="@+id/btnAssign"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:text="Assign Test"
-        android:textSize="18sp"
-        app:cornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@id/loginCard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_notifications"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.cardview.widget.CardView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:id="@+id/loginCard"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
-        app:layout_constraintTop_toBottomOf="@id/btnAssign">
+        android:id="@+id/my_scrollview"
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_gravity="center_horizontal"
-            android:padding="24dp">
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Login"-->
-<!--                android:id="@+id/loginText"-->
-<!--                android:textSize="36sp"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textStyle="bold" />-->
-            <EditText
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/text_notifications"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/username"
-                android:drawablePadding="5dp"
-                android:hint="Username"
-                android:padding="5dp"
-                android:textColor="@color/black"
-                android:textColorHighlight="@color/cardview_dark_background"
-                android:layout_marginTop="10dp"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/password"
-                android:drawablePadding="5dp"
-                android:hint="Password"
-                android:padding="5dp"
-                android:inputType="textPassword"
-                android:textColor="@color/black"
-                android:textColorHighlight="@color/cardview_dark_background"
-                android:layout_marginTop="10dp"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:id="@+id/lockid"
-                android:drawablePadding="5dp"
-                android:hint="LockID"
-                android:padding="5dp"
-                android:textColor="@color/black"
-                android:textColorHighlight="@color/cardview_dark_background"
-                android:layout_marginTop="10dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/btnAssign"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.1" />
+
             <Button
+                android:id="@+id/btnAssign"
                 android:layout_width="match_parent"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 android:layout_height="50dp"
-                android:id="@+id/loginButton"
-                android:text="Request"
+                android:layout_marginTop="5dp"
+                android:text="Assign Test"
                 android:textSize="18sp"
-                android:layout_marginTop="10dp"
-                app:cornerRadius = "20dp"/>
+                app:cornerRadius="20dp"
+                app:layout_constraintBottom_toTopOf="@id/registerCard"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_notifications"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/registerCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+                    <!--            <TextView-->
+                    <!--                android:layout_width="match_parent"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:text="Login"-->
+                    <!--                android:id="@+id/loginText"-->
+                    <!--                android:textSize="36sp"-->
+                    <!--                android:textAlignment="center"-->
+                    <!--                android:textStyle="bold" />-->
+                    <EditText
+                        android:id="@+id/reg_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Username"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <EditText
+                        android:id="@+id/reg_token"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Token"
+                        android:inputType="textPassword"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <EditText
+                        android:id="@+id/reg_lockid"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="LockID"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <Button
+                        android:id="@+id/registerButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Register"
+                        android:textSize="18sp"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settingCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+                    <!--            <TextView-->
+                    <!--                android:layout_width="match_parent"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:text="Login"-->
+                    <!--                android:id="@+id/loginText"-->
+                    <!--                android:textSize="36sp"-->
+                    <!--                android:textAlignment="center"-->
+                    <!--                android:textStyle="bold" />-->
+                    <EditText
+                        android:id="@+id/set_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Username"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <EditText
+                        android:id="@+id/set_token"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Token"
+                        android:inputType="textPassword"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <EditText
+                        android:id="@+id/set_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <Button
+                        android:id="@+id/settingButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Setting Password"
+                        android:textSize="18sp"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/loginCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+                    <!--            <TextView-->
+                    <!--                android:layout_width="match_parent"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:text="Login"-->
+                    <!--                android:id="@+id/loginText"-->
+                    <!--                android:textSize="36sp"-->
+                    <!--                android:textAlignment="center"-->
+                    <!--                android:textStyle="bold" />-->
+                    <EditText
+                        android:id="@+id/req_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Username"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <EditText
+                        android:id="@+id/req_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <EditText
+                        android:id="@+id/req_lockid"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:hint="LockID"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/cardview_dark_background" />
+
+                    <Button
+                        android:id="@+id/requestButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Request"
+                        android:textSize="18sp"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </ScrollView>
 
     <TextView
         android:id="@+id/server_resp"
@@ -111,7 +270,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginCard"
+        app:layout_constraintTop_toBottomOf="@+id/my_scrollview"
         app:layout_constraintVertical_bias="0" />
 
 
