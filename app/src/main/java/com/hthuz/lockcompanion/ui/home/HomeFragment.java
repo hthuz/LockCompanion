@@ -200,7 +200,7 @@ public class HomeFragment extends Fragment {
 //            startActivity(intent_control);
 //        });
         // initialize lists
-        myDeviceAdapter = new MyDeviceAdapter(deviceList);
+        myDeviceAdapter = new MyDeviceAdapter(deviceList, getActivity());
         binding.rvDevice.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         binding.rvDevice.setAdapter(myDeviceAdapter);

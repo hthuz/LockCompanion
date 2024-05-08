@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.hthuz.lockcompanion.databinding.FragmentNotificationsBinding;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -45,7 +47,19 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
-                    Log.i(TAG, responseBody.string());
+                    String msg = responseBody.string();
+                    Log.i(TAG, msg);
+//                    binding.serverResp.setText(responseBody.string());
+                    if (msg.isEmpty())
+                        return;
+                    try {
+                        JSONObject jsonObject = new JSONObject(msg);
+                        if (!jsonObject.has("content"))
+                            return;
+                        Log.i(TAG, jsonObject.getString("content"));
+                        binding.serverResp.setText(jsonObject.getString("content"));
+                    } catch (Exception e) {e.printStackTrace();}
+
                 }
             }
         });
@@ -72,6 +86,14 @@ public class NotificationsFragment extends Fragment {
 
     private void initView() {
 
+        binding.btnAssign.setOnClickListener(v -> {
+            String url = "http://82.157.179.228:8080/assignment";
+            try {
+                run(url);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         binding.loginButton.setOnClickListener(v -> {
             Response response = null;
             String username = binding.username.getText().toString();

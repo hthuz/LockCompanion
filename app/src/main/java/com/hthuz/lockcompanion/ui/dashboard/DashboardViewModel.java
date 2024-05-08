@@ -8,13 +8,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.AndroidViewModel;
 
 import com.hthuz.lockcompanion.BluetoothLeService;
 import com.hthuz.lockcompanion.Values;
@@ -69,9 +72,10 @@ public class DashboardViewModel extends ViewModel {
                 if (!bluetoothService.initialize()) {
                     Log.e(TAG, "Unable to initialize Bluetooth");
                 }
+
                 // perform connection
-                final boolean result = bluetoothService.connect(Values.macAddress);
-                Log.d(TAG, "Connect request result=" + result);
+                final boolean result = bluetoothService.connect(macAddress);
+                Log.d(TAG, "Connect request result: " + result);
             }
 
         }
@@ -123,6 +127,8 @@ public class DashboardViewModel extends ViewModel {
 //        binding.serviceTextInfo.setText(service_info_msg);
 
     }
+    private String macAddress = "E8:6B:EA:D4:FC:D6";
+
     public DashboardViewModel() {
         mText = new MutableLiveData<>();
         mState = new MutableLiveData<>();
@@ -130,9 +136,13 @@ public class DashboardViewModel extends ViewModel {
         mText.setValue("Lock Companion Unlock");
         mState.setValue("DISCONNECTED");
         mConnected.setValue(false);
+        Values.connected = false;
         readRssiThread = new ReadRssiThread();
     }
 
+    public void setMacAddress(String address) {
+        macAddress = address;
+    }
     public BluetoothLeService getBluetoothService() {
         return bluetoothService;
     }
@@ -147,6 +157,7 @@ public class DashboardViewModel extends ViewModel {
     public String getState() {return mState.getValue();}
     public void setConnected(Boolean connected) {
         mConnected.setValue(connected);
+        Values.connected = connected;
     }
     public Boolean isConnected() {return mConnected.getValue();}
     public LiveData<String> getText() {

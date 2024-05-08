@@ -1,6 +1,7 @@
 package com.hthuz.lockcompanion;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +10,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hthuz.lockcompanion.databinding.ItemDeviceBinding;
 import com.hthuz.lockcompanion.ui.dashboard.DashboardFragment;
+import com.hthuz.lockcompanion.ui.dashboard.DashboardViewModel;
 import com.hthuz.lockcompanion.ui.home.HomeFragment;
 
 import java.util.List;
@@ -20,10 +23,14 @@ import java.util.List;
 public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHolder> {
 
     private final List<MyDevice> lists;
+    private final Context context;
     private final static String TAG = "DEBUG";
 
-    public MyDeviceAdapter(List<MyDevice> lists) {
+    public MyDeviceAdapter(List<MyDevice> lists, Context context) {
+
         this.lists = lists;
+        this.context = context;
+
     }
 
     @NonNull
@@ -59,6 +66,12 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
                 MyDevice device = binding.getDevice();
                 String name = device.getDevice().getName() != null ? device.getDevice().getName().toString() : "Unknown";
                 String address = device.getDevice().getAddress().toString();
+
+                if(Values.connected) {
+                    showMsg("Please disconnect first");
+                    return;
+                }
+
                 if (!name.contains("ESP32")) {
                     showMsg("Only door lock can be connected");
                     return;
@@ -67,6 +80,13 @@ public class MyDeviceAdapter extends RecyclerView.Adapter<MyDeviceAdapter.ViewHo
                 Log.i(TAG, device.getDevice().getAddress());
                 Values.macAddress = address;
                 showMsg(name + " selected");
+                SharedPreferences sharedPreferences = this.itemView.getContext().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("macAddress", address);
+                editor.commit();
+
+
+
             });
         }
 

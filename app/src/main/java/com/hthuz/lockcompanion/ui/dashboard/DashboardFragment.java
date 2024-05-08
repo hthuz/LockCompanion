@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -116,7 +117,7 @@ public class DashboardFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e(TAG, "Error");
                 }
-                final boolean result = getViewModel().getBluetoothService().connect(Values.macAddress);
+                final boolean result = getViewModel().getBluetoothService().connect(getMacAddress());
                 Log.d(TAG, "Connect request result=" + result);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // display supported services
@@ -179,8 +180,8 @@ public class DashboardFragment extends Fragment {
                 showMsg("request is null");
                 return;
             }
-
-            Log.i(TAG, "MAC is " + Values.macAddress);
+            getViewModel().setMacAddress(getMacAddress());
+            Log.i(TAG, "MAC is " + getMacAddress());
             startConnect();
             showMsg("Connecting...");
 
@@ -281,6 +282,12 @@ public class DashboardFragment extends Fragment {
 
 
 
+
+
+    public String getMacAddress() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("macAddress", "E8:6B:EA:D4:FC:D6");
+    }
 
 
     public void showMsg(CharSequence msg) {
