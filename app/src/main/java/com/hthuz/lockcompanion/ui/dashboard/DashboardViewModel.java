@@ -23,6 +23,7 @@ import com.hthuz.lockcompanion.BluetoothLeService;
 import com.hthuz.lockcompanion.Values;
 
 import java.util.List;
+import java.util.UUID;
 
 public class DashboardViewModel extends ViewModel {
 
@@ -49,6 +50,13 @@ public class DashboardViewModel extends ViewModel {
                     if (isConnected()) {
                         Log.i(TAG, "LOOP");
                         bluetoothService.readRemoteRssi();
+//                        BluetoothGattService esp32Service = getBluetoothService().getGattServiceByUUID(DashboardFragment.ESP32_USER_SERVICE_UUID);
+//                        if (esp32Service != null) {
+////                            BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(DashboardFragment.ESP32_RX_CHARACTERISTIC_UUID);
+//                            BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(DashboardFragment.ESP32_TX_CHARACTERISTIC_UUID);
+//                            getBluetoothService().readCharacteristic(txCharacteristic);
+//                        }
+
                     }
                 }
             }
@@ -120,9 +128,15 @@ public class DashboardViewModel extends ViewModel {
                 }
             }
         }
+
         // enable read characteristic
         if (txCharacteristic != null) {
             bluetoothService.setCharacteristicNotification(txCharacteristic, true);
+            List<BluetoothGattDescriptor> descriptors = txCharacteristic.getDescriptors();
+            for (BluetoothGattDescriptor descriptor : descriptors) {
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                bluetoothService.writeDescriptor(descriptor);
+            }
         }
 //        binding.serviceTextInfo.setText(service_info_msg);
 

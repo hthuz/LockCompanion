@@ -105,6 +105,7 @@ public class DashboardFragment extends Fragment {
                 getViewModel().setConnected(true);
                 // show connected message
                 getViewModel().setState("CONNECTED");
+
                 binding.connectState.setText(getViewModel().getState());
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 getViewModel().setConnected(false);
@@ -125,8 +126,12 @@ public class DashboardFragment extends Fragment {
             } else if (BluetoothLeService.ACTION_CHARACTERISTIC_READ.equals(action)
                     || BluetoothLeService.ACTION_CHARACTERISTIC_CHANGED.equals(action)) {
                 String readValue = intent.getStringExtra("readValue");
-                binding.readConsole.setText("Read Data:" + readValue);
-                Log.e(TAG, "fragment read: " + readValue);
+                binding.readConsole.setText(readValue);
+                Log.i(TAG, "Read Data: " + readValue);
+                if (readValue.equals("Door Opening...")) {
+                    Log.i(TAG, "Unlocked!");
+                    showMsg("Unlocked!");
+                }
             } else if (BluetoothLeService.ACTION_READ_REMOTE_RSSI.equals(action)) {
                 int rssi = intent.getIntExtra("rssi", 0);
                 binding.rssiValue.setText("rssi: " + rssi);
@@ -225,13 +230,7 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
-
-            BluetoothGattService esp32Service = getViewModel().getBluetoothService().getGattServiceByUUID(ESP32_USER_SERVICE_UUID);
-            if (esp32Service == null)
-                return;
-            BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(ESP32_RX_CHARACTERISTIC_UUID);
-            BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(ESP32_TX_CHARACTERISTIC_UUID);
-            getViewModel().getBluetoothService().readCharacteristic(txCharacteristic);
+            readESP32();
         }));
         binding.btnDisconnect.setOnClickListener((v -> {
             if (!getViewModel().isConnected()) {
@@ -250,6 +249,14 @@ public class DashboardFragment extends Fragment {
         }));
     }
 
+    public void readESP32() {
+        BluetoothGattService esp32Service = getViewModel().getBluetoothService().getGattServiceByUUID(ESP32_USER_SERVICE_UUID);
+        if (esp32Service == null)
+            return;
+        BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(ESP32_RX_CHARACTERISTIC_UUID);
+        BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(ESP32_TX_CHARACTERISTIC_UUID);
+        getViewModel().getBluetoothService().readCharacteristic(txCharacteristic);
+    }
 
     public void writeESP32(String msg) {
         BluetoothGattService esp32Service = getViewModel().getBluetoothService().getGattServiceByUUID(ESP32_USER_SERVICE_UUID);

@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.hthuz.lockcompanion.ui.dashboard.DashboardFragment;
 
 import java.util.List;
 import java.util.UUID;
@@ -194,6 +197,14 @@ public class BluetoothLeService extends Service {
         bluetoothGatt.writeCharacteristic(characteristic);
     }
 
+    public void writeDescriptor(BluetoothGattDescriptor descriptor) {
+        if (bluetoothGatt == null) {
+            Log.e(TAG, "BluetoothGatt not initialized");
+            return;
+        }
+        bluetoothGatt.writeDescriptor(descriptor);
+    }
+
     public boolean readRemoteRssi() {
         return bluetoothGatt.readRemoteRssi();
     }
@@ -204,5 +215,13 @@ public class BluetoothLeService extends Service {
             return;
         }
         bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+    }
+    public BluetoothGattCharacteristic getTXCharacteristc() {
+        BluetoothGattService esp32Service = getGattServiceByUUID(DashboardFragment.ESP32_USER_SERVICE_UUID);
+        if (esp32Service == null)
+            return null;
+//        BluetoothGattCharacteristic rxCharacteristic = esp32Service.getCharacteristic(DashboardFragment.ESP32_RX_CHARACTERISTIC_UUID);
+        BluetoothGattCharacteristic txCharacteristic = esp32Service.getCharacteristic(DashboardFragment.ESP32_TX_CHARACTERISTIC_UUID);
+        return txCharacteristic;
     }
 }
