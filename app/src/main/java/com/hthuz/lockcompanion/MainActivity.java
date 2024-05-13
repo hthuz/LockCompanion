@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         String macAddress = sharedPreferences.getString("macAddress", "E8:6B:EA:D4:FC:D6");
         String deviceName = sharedPreferences.getString("deviceName", "ESP32_doorlock");
         binding.curDevice.setText(deviceName + " " + macAddress);
+
+
     }
 
 

@@ -59,6 +59,7 @@ public class DashboardViewModel extends ViewModel {
 //                        Log.i(TAG, "LOOP");
                         bluetoothService.readRemoteRssi();
 
+
 //                        if (processing && System.currentTimeMillis() - getStime() > 10000) {
 //                            processing = false;
 //                            showSnack("Processing too long time");

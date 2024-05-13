@@ -164,18 +164,18 @@ public class HomeFragment extends Fragment {
 
     private void initView() {
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
-        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
-        Log.i(TAG, "autoconnect:" + String.valueOf(autoConnect));
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+//        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
+//        Log.i(TAG, "autoconnect:" + String.valueOf(autoConnect));
 
         if (isOpenBluetooth()) {
             BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(BluetoothManager.class);
             mBluetoothAdapter = manager.getAdapter();
             scanner = mBluetoothAdapter.getBluetoothLeScanner();
         }
-        if (isOpenBluetooth() && autoConnect) {
-            scanBluetooth();
-        }
+//        if (isOpenBluetooth() && autoConnect) {
+//            scanBluetooth();
+//        }
 
         // open bluetooth button event
         binding.btnOpenBluetooth.setOnClickListener(v -> {
@@ -275,24 +275,24 @@ public class HomeFragment extends Fragment {
         }
 
         // If auto connect
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
-        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
-        if (autoConnect) {
-            if (device.getDevice().getName() != null && device.getDevice().getName().equals("ESP32_doorlock")) {
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("macAddress", device.getDevice().getAddress());
-                editor.putString("deviceName", device.getDevice().getName());
-                editor.commit();
-                Log.i(TAG, "NAV!");
-
-//                NavController navController = NavHostFragment.findNavController(this);
-                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
-                navController.navigate(R.id.navigation_dashboard);
-
-
-            }
-        }
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+//        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
+//        if (autoConnect) {
+//            if (device.getDevice().getName() != null && device.getDevice().getName().equals("ESP32_doorlock")) {
+//
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString("macAddress", device.getDevice().getAddress());
+//                editor.putString("deviceName", device.getDevice().getName());
+//                editor.commit();
+//                Log.i(TAG, "NAV!");
+//
+////                NavController navController = NavHostFragment.findNavController(this);
+//                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
+//                navController.navigate(R.id.navigation_dashboard);
+//
+//
+//            }
+//        }
     }
 
     private boolean isOpenBluetooth() {
