@@ -85,6 +85,7 @@ public class DashboardFragment extends Fragment {
         });
 
         getActivity().registerReceiver(gattUpdateReceiver,makeGattUpdateIntentFilter());
+        getViewModel().setBinding(binding);
 
 
         if (getViewModel().getReadRssiThread().getState() == Thread.State.NEW) {
@@ -131,7 +132,8 @@ public class DashboardFragment extends Fragment {
                 String readValue = intent.getStringExtra("readValue");
                 binding.readConsole.setText(readValue);
                 Log.i(TAG, "Read Data: " + readValue);
-                if (readValue.equals("Door Opening...")) {
+
+                if (getViewModel().isProcessing() && readValue.equals("Door Opening")) {
                     getViewModel().setEtime(System.currentTimeMillis());
                     double time_dif = (getViewModel().getEtime() - getViewModel().getStime()) / 1000.0;
                     Log.i(TAG, String.valueOf(time_dif));
@@ -139,11 +141,25 @@ public class DashboardFragment extends Fragment {
                     showMsg("Unlocked!");
                     showSnack(String.valueOf(time_dif) + "s");
                 }
+                if (getViewModel().isProcessing() && readValue.equals("Door Open Done!`")) {
+                    getViewModel().setProcessing(false);
+                }
+                if (getViewModel().isProcessing()) {
+                    if (readValue.equals("Enroll_Fail...") ||
+                    readValue.equals("Enroll_Done!") ||
+                    readValue.equals("Clear_Done!") ||
+                    readValue.equals("Clear_Fail...") ||
+                    readValue.startsWith("Finger_num:") ) {
+                        getViewModel().setProcessing(false);
+                    }
+                }
+
             } else if (BluetoothLeService.ACTION_READ_REMOTE_RSSI.equals(action)) {
                 int rssi = intent.getIntExtra("rssi", 0);
                 binding.rssiValue.setText("rssi: " + rssi);
-                if (getViewModel().isConnected() && rssi < 0 && rssi > -45) {
+                if (!getViewModel().isProcessing() && getViewModel().isConnected() && rssi < 0 && rssi > -45) {
                     getViewModel().setStime(System.currentTimeMillis());
+                    getViewModel().setProcessing(true);
                     writeESP32("5");
                     showMsg("Auto Unlocking...");
                 }
@@ -156,6 +172,7 @@ public class DashboardFragment extends Fragment {
         super.onDestroyView();
         getViewModel().getReadRssiThread().stopThread();
         binding = null;
+        getActivity().unregisterReceiver(gattUpdateReceiver);
     }
     @Override
     public void onDestroy() {
@@ -205,6 +222,11 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
+            if (getViewModel().isProcessing()) {
+                showMsg("Processing previous requests");
+                return;
+            }
+            getViewModel().setProcessing(true);
             getViewModel().setStime(System.currentTimeMillis());
             writeESP32("5");
             showMsg("Unlocking...");
@@ -214,6 +236,11 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
+            if (getViewModel().isProcessing()) {
+                showMsg("Processing previous requests");
+                return;
+            }
+            getViewModel().setProcessing(true);
             writeESP32("1");
             showMsg("Enrolling...");
         });
@@ -222,6 +249,11 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
+            if (getViewModel().isProcessing()) {
+                showMsg("Processing previous requests");
+                return;
+            }
+            getViewModel().setProcessing(true);
             writeESP32("2");
             showMsg("Emptying...");
         });
@@ -230,6 +262,11 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
+            if (getViewModel().isProcessing()) {
+                showMsg("Processing previous requests");
+                return;
+            }
+            getViewModel().setProcessing(true);
             writeESP32("3");
             showMsg("Getting...");
 
@@ -240,6 +277,7 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
+            getViewModel().setProcessing(false);
             readESP32();
         }));
         binding.btnDisconnect.setOnClickListener((v -> {
@@ -247,6 +285,7 @@ public class DashboardFragment extends Fragment {
                 showMsg("Device is already disconnected");
                 return;
             }
+            getViewModel().setProcessing(false);
             getViewModel().setConnected(false);
             getViewModel().setState("DISCONNECTED");
             binding.connectState.setText(getViewModel().getState());
@@ -281,7 +320,8 @@ public class DashboardFragment extends Fragment {
 
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(gattUpdateReceiver);
+
+
     }
 
     private static IntentFilter makeGattUpdateIntentFilter() {
