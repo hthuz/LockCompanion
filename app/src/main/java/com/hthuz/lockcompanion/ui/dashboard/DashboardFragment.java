@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.hthuz.lockcompanion.Values;
 import com.hthuz.lockcompanion.databinding.FragmentDashboardBinding;
 import com.hthuz.lockcompanion.BluetoothLeService;
@@ -63,6 +64,8 @@ public class DashboardFragment extends Fragment {
         return new ViewModelProvider(this).get(DashboardViewModel.class);
     }
     private int test_num;
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -129,14 +132,20 @@ public class DashboardFragment extends Fragment {
                 binding.readConsole.setText(readValue);
                 Log.i(TAG, "Read Data: " + readValue);
                 if (readValue.equals("Door Opening...")) {
+                    getViewModel().setEtime(System.currentTimeMillis());
+                    double time_dif = (getViewModel().getEtime() - getViewModel().getStime()) / 1000.0;
+                    Log.i(TAG, String.valueOf(time_dif));
                     Log.i(TAG, "Unlocked!");
                     showMsg("Unlocked!");
+                    showSnack(String.valueOf(time_dif) + "s");
                 }
             } else if (BluetoothLeService.ACTION_READ_REMOTE_RSSI.equals(action)) {
                 int rssi = intent.getIntExtra("rssi", 0);
                 binding.rssiValue.setText("rssi: " + rssi);
                 if (getViewModel().isConnected() && rssi < 0 && rssi > -45) {
+                    getViewModel().setStime(System.currentTimeMillis());
                     writeESP32("5");
+                    showMsg("Auto Unlocking...");
                 }
             }
         }
@@ -196,6 +205,7 @@ public class DashboardFragment extends Fragment {
                 showMsg("Please connect doorlock first");
                 return;
             }
+            getViewModel().setStime(System.currentTimeMillis());
             writeESP32("5");
             showMsg("Unlocking...");
         });
@@ -307,5 +317,16 @@ public class DashboardFragment extends Fragment {
                 toast.cancel();
             }
         }, 500);
+    }
+    public void showSnack(CharSequence msg) {
+
+        Snackbar snackbar = Snackbar.make(binding.testMsg, msg, Snackbar.LENGTH_SHORT)
+                .setAction("x", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+        snackbar.show();
     }
 }

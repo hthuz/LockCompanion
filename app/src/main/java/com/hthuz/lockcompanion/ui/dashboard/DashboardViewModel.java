@@ -32,7 +32,9 @@ public class DashboardViewModel extends ViewModel {
     private final MutableLiveData<Boolean> mConnected;
 
     private static final String TAG = "MY_DEBUG";
-
+    private MutableLiveData<Long> stime;
+    private MutableLiveData<Long> etime;
+    private MutableLiveData<Boolean> processing;
     private BluetoothLeService bluetoothService;
 
     public class ReadRssiThread extends Thread {
@@ -147,13 +149,36 @@ public class DashboardViewModel extends ViewModel {
         mText = new MutableLiveData<>();
         mState = new MutableLiveData<>();
         mConnected = new MutableLiveData<>();
+        stime = new MutableLiveData<>();
+        etime = new MutableLiveData<>();
+        processing = new MutableLiveData<>();
         mText.setValue("Lock Companion Unlock");
         mState.setValue("DISCONNECTED");
         mConnected.setValue(false);
+        stime.setValue((long) 0.0);
+        etime.setValue((long) 0);
+        processing.setValue(false);
         Values.connected = false;
         readRssiThread = new ReadRssiThread();
     }
-
+    public void setProcessing(Boolean is_processing) {
+        processing.setValue(is_processing);
+    }
+    public boolean isProcessing() {
+        return processing.getValue();
+    }
+    public void setStime(long s_time) {
+        stime.setValue(s_time);
+    }
+    public long getStime() {
+        return stime.getValue();
+    }
+    public void setEtime(long e_time) {
+        etime.setValue(e_time);
+    }
+    public long getEtime() {
+        return etime.getValue();
+    }
     public void setMacAddress(String address) {
         macAddress = address;
     }
