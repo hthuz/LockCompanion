@@ -123,8 +123,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_empty" />
 
+<!--    <Button-->
+<!--        android:id="@+id/btn_readvalue"-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:insetTop="0dp"-->
+<!--        android:insetBottom="0dp"-->
+<!--        android:text="Read Value"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.439"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/btn_getnum" />-->
+
     <Button
-        android:id="@+id/btn_readvalue"
+        android:id="@+id/btn_enable_auto_connect"
         android:layout_width="300dp"
         android:layout_height="30dp"
         android:layout_marginStart="10dp"
@@ -132,12 +147,26 @@
         android:layout_marginEnd="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
-        android:text="Read Value"
+        android:text="Enable Auto Connect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_getnum" />
 
+    <Button
+        android:id="@+id/btn_disable_auto_connect"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="Disable Auto Connect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.439"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_enable_auto_connect" />
     <Button
         android:id="@+id/btn_disconnect"
         android:layout_width="300dp"
@@ -151,7 +180,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_readvalue" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_disable_auto_connect" />
 
     <!--    <TextView-->
 <!--        android:id="@+id/test_msg"-->

@@ -56,7 +56,7 @@ public class DashboardViewModel extends ViewModel {
                         // Handle interruption
                     }
                     if (isConnected()) {
-                        Log.i(TAG, "LOOP");
+//                        Log.i(TAG, "LOOP");
                         bluetoothService.readRemoteRssi();
 
 //                        if (processing && System.currentTimeMillis() - getStime() > 10000) {

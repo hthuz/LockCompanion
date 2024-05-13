@@ -32,10 +32,12 @@ import com.hthuz.lockcompanion.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import androidx.core.view.ViewCompat;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    private NavController navController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
@@ -60,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         String deviceName = sharedPreferences.getString("deviceName", "ESP32_doorlock");
         binding.curDevice.setText(deviceName + " " + macAddress);
     }
-
 
 
 }

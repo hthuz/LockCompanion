@@ -28,10 +28,17 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.hthuz.lockcompanion.R;
 import com.hthuz.lockcompanion.Values;
 import com.hthuz.lockcompanion.databinding.FragmentDashboardBinding;
 import com.hthuz.lockcompanion.BluetoothLeService;
@@ -65,7 +72,10 @@ public class DashboardFragment extends Fragment {
     }
     private int test_num;
 
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -92,10 +102,37 @@ public class DashboardFragment extends Fragment {
             getViewModel().getReadRssiThread().start();
         }
 
+
+
         getViewModel().getReadRssiThread().startThread();
         // bluetooth related
         Log.i(TAG, "connected is " + getViewModel().isConnected());
 
+        // Reset Navigation
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
+        BottomNavigationView navView = getActivity().findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                .build();
+
+        NavigationUI.setupActionBarWithNavController((AppCompatActivity) getActivity(), navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
+        Log.i(TAG, "autoconnected is " + autoConnect);
+        if (autoConnect) {
+
+
+            if (!getViewModel().isConnected() && requestBluetoothConnect != null) {
+                getViewModel().setMacAddress(getMacAddress());
+                Log.i(TAG, "MAC is " + getMacAddress());
+                startConnect();
+                showMsg("Connecting...");
+            }
+        }
         initView();
         return root;
     }
@@ -272,14 +309,30 @@ public class DashboardFragment extends Fragment {
 
 
         });
-        binding.btnReadvalue.setOnClickListener((v -> {
-            if (!getViewModel().isConnected()) {
-                showMsg("Please connect doorlock first");
-                return;
-            }
-            getViewModel().setProcessing(false);
-            readESP32();
-        }));
+//        binding.btnReadvalue.setOnClickListener((v -> {
+//            if (!getViewModel().isConnected()) {
+//                showMsg("Please connect doorlock first");
+//                return;
+//            }
+//            getViewModel().setProcessing(false);
+//            readESP32();
+//        }));
+
+
+        binding.btnEnableAutoConnect.setOnClickListener(v -> {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("autoConnect", true);
+            editor.commit();
+        });
+
+        binding.btnDisableAutoConnect.setOnClickListener(v -> {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("autoConnect", false);
+            editor.commit();
+        });
+
         binding.btnDisconnect.setOnClickListener((v -> {
             if (!getViewModel().isConnected()) {
                 showMsg("Device is already disconnected");

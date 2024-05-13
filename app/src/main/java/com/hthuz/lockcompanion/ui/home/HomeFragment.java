@@ -27,10 +27,15 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +48,7 @@ import com.hthuz.lockcompanion.MyDeviceAdapter;
 import com.hthuz.lockcompanion.R;
 import com.hthuz.lockcompanion.databinding.ActivityMainBinding;
 import com.hthuz.lockcompanion.databinding.FragmentHomeBinding;
+import com.hthuz.lockcompanion.ui.dashboard.DashboardFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +62,7 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
+        registerIntent();
         Log.i(TAG, "Home fragment onCreateView");
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -70,6 +77,10 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -153,14 +164,22 @@ public class HomeFragment extends Fragment {
 
     private void initView() {
 
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
+        Log.i(TAG, "autoconnect:" + String.valueOf(autoConnect));
+
         if (isOpenBluetooth()) {
             BluetoothManager manager = (BluetoothManager) getActivity().getSystemService(BluetoothManager.class);
             mBluetoothAdapter = manager.getAdapter();
             scanner = mBluetoothAdapter.getBluetoothLeScanner();
         }
+        if (isOpenBluetooth() && autoConnect) {
+            scanBluetooth();
+        }
+
         // open bluetooth button event
         binding.btnOpenBluetooth.setOnClickListener(v -> {
-            showMsg("Button pressed");
+
             if (isOpenBluetooth()) {
                 showMsg("Bluetooth open");
                 return;
@@ -180,28 +199,11 @@ public class HomeFragment extends Fragment {
         });
         // scan bluetooth button event
         binding.btnScanBluetooth.setOnClickListener(v -> {
-            if (isAndroid12()) {
-                if (!hasPermission(android.Manifest.permission.BLUETOOTH_CONNECT)) {
-                    requestBluetoothConnect.launch(android.Manifest.permission.BLUETOOTH_CONNECT);
-                    return;
-                }
-                if (hasPermission(android.Manifest.permission.BLUETOOTH_SCAN)) {
-                    if (isScanning) stopScan();
-                    else startScan();
-                } else {
-                    requestBluetoothScan.launch(android.Manifest.permission.BLUETOOTH_SCAN);
-                }
-            } else {
-                if (hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    if (isScanning) stopScan();
-                    else startScan();
-                } else {
-                    requestLocation.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-                }
-            }
+            scanBluetooth();
         });
 
-        // connect button to start activity
+
+//         connect button to start activity
 //        binding.btnConnectBluetooth.setOnClickListener(v -> {
 //            Intent intent_control = new Intent(this, DeviceControlActivity.class);
 //            startActivity(intent_control);
@@ -213,8 +215,32 @@ public class HomeFragment extends Fragment {
         binding.rvDevice.setAdapter(myDeviceAdapter);
     }
 
+    private void scanBluetooth() {
+        if (isAndroid12()) {
+            if (!hasPermission(android.Manifest.permission.BLUETOOTH_CONNECT)) {
+                requestBluetoothConnect.launch(android.Manifest.permission.BLUETOOTH_CONNECT);
+                return;
+            }
+            if (hasPermission(android.Manifest.permission.BLUETOOTH_SCAN)) {
+                if (isScanning) stopScan();
+                else startScan();
+            } else {
+                requestBluetoothScan.launch(android.Manifest.permission.BLUETOOTH_SCAN);
+            }
+        } else {
+            if (hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if (isScanning) stopScan();
+                else startScan();
+            } else {
+                requestLocation.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+        }
+    }
     private void startScan() {
         if (!isScanning) {
+            if (scanner == null) {
+                Log.e(TAG, "scanner is null");
+            }
             scanner.startScan(scanCallback);
             isScanning = true;
             binding.btnScanBluetooth.setText("Stop scanning");
@@ -246,6 +272,26 @@ public class HomeFragment extends Fragment {
         } else {
             deviceList.get(index).setRssi(device.getRssi());
             myDeviceAdapter.notifyItemChanged(index);
+        }
+
+        // If auto connect
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("lock_companion", Context.MODE_PRIVATE);
+        boolean autoConnect = sharedPreferences.getBoolean("autoConnect", false);
+        if (autoConnect) {
+            if (device.getDevice().getName() != null && device.getDevice().getName().equals("ESP32_doorlock")) {
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("macAddress", device.getDevice().getAddress());
+                editor.putString("deviceName", device.getDevice().getName());
+                editor.commit();
+                Log.i(TAG, "NAV!");
+
+//                NavController navController = NavHostFragment.findNavController(this);
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
+                navController.navigate(R.id.navigation_dashboard);
+
+
+            }
         }
     }
 
